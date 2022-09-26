@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block title %}Sign Up{% endblock %}
+{% block content %}<form enctype="multipart/form-data" method="POST">
+<h3 align="center">Sign Up</h3>
+<div class="form-group">
+<label id="label" for="email">Email Address</label>
+<input id= "input" type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+<label id="label" for="username">Username</label>
+<input id= "input" type="text" class="form-control" id="username" name="username" placeholder="Enter Username">
+<label id="label" for="password1">Password</label>
+<input id= "input" type="password" class="form-control" id="password1" name="password1" placeholder="Enter Password">
+<label id="label" for="password2">Password Again</label>
+<input id= "input" type="password" class="form-control" id="password2" name="password2" placeholder="Enter Password Again">
+<input id= "fileinput" type="file" name="pic" />
+</form>
+<br/>
+<div align="center">
+<button id="signupbtn" class="btn btn-primary" type="submit">Sign Up</button>
+</div>
+</div>
+</form>
+{% endblock %}

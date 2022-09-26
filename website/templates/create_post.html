@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Home{% endblock %}{% block content %}
+<div id="top"></div>
+<h1 align="center">Create Post</h1>
+<form method="post">
+    <label id="label" for="title">Youtube Video</label>
+    <textarea style="height: 50px" name="embed" id="embed" class="form-control" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></textarea>
+    <br />
+    <label id="label" for="title">Text Field</label>
+    <textarea style="height: 200px" name="text" id="text" class="form-control" placeholder="Start typing your new post here..."></textarea>
+    <br />
+    <div align="center"><button id="submitpbtn" type="submit" class="btn btn-lg btn-primary">Submit</button></div>
+</form>
+{% endblock %}

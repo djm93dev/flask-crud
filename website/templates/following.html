@@ -1,0 +1,186 @@
+{% extends "posts_div.html" %}{% block title %}{{user.username}}'s Feed{% endblock %}{% block header %}
+{{user.username}}'s feed{% endblock %}
+
+{% block content
+    %}
+    <div id="top" align="center">
+      <a href="/create-post"
+        ><button id="createpbtn"type="button" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-pencil"> Create a Post</i>
+        </button></a
+      >
+    </div>
+    <br />
+    <div id="posts">
+
+
+      {% for post in posts|reverse %}
+      {% if post.author|string in user.following %}
+      <div id="postbox" class="card border-dark">
+        <div align="left" class="card-header align-items-center">
+          <div align="right">
+            {% if user.id == post.author %}
+              <div class="btn-group">
+                <button
+                  type="button"
+                  id="editbtn"
+                  class="btn btn-sm btn-primary dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                ></button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a>
+                    <a href="/edit-profile" class="dropdown-item">Edit Profile</a>
+                  </li>
+                </ul>
+              </div>
+              {% endif %}
+    
+              
+              {% if post.author|string in user.following %}
+              
+              
+              <a href="/follow/channel/{{post.user.id}}" id="followbtn" class="btn btn-sm btn-primary"><i id="follows-button-{{postId}}"class="fa-solid fa-user"></i>Unfollow</a>
+              
+    
+              {% elif post.author in channel_id and post.author != user.id %}
+              
+              
+              <a class="btn" href="/follow/channel/{{post.user.id}}"><button id="followbtn" class="btn btn-sm btn-primary"><i id="follows-button-{{postId}}"class="fa-solid fa-user"></i> Follow </button></i></a>
+              {% elif post.author != user.id %}
+              <a class="btn"><button id="followbtn" class="btn btn-sm btn-primary"><i id="follows-button-{{postId}}"class="fa-solid fa-user"></i> No Channel </button></i></a>
+              {% else %}
+              <a class="btn" href="/profile/{{post.user.username}}"><button id="followbtn" class="btn btn-sm btn-primary"><i id="follows-button-{{postId}}"class="fa-solid fa-user"></i> My Channel </button></i></a>
+    
+              
+              {% endif %}
+
+            <div align="center">
+          <div align="center" style="width: 50%"><a href="/posts/{{post.user.username}}"><img id="profile-image" src="/profile-image/{{post.user.username}}" alt="{{post.user.username}}" width="100" height="100", style="border-radius: 100%; border: 2px solid #330033;"></a>
+          <br />
+          
+            
+          {% if user.id == post.author %}
+          <div align="center" style="margin-top: 5px;"class="d-flex justify-content-between"><a class="btn" href="/edit-profile"><i class="fa-solid fa-gear"></i></a><a class="btn" href="/profile/{{post.user.username}}"><i class="fa-solid fa-user"></i></a></div>
+          
+          
+          {% endif %}
+          <a href="/posts/{{post.user.username}}"><p id="username1" align="center" style="color: white; margin-top: 1em; margin-bottom: -.5em; font-weight: bold; background-color: #330033; border-radius: 5px; border: solid 2px #000">@{{post.user.username}}</p></a>  
+          
+            <br/>
+    
+          </div> 
+        </div>
+        <div class="card-body">
+          <div align="center" class="card-text">
+            <!-- if post.embed contains youtube -->
+            {% if post.embed == 'https://www.youtube.com/watch?' %}
+            <iframe src="https://www.youtube.com/embed/{{post.youtube_id}}" max-width="600" max-height="480" frameborder="0" allowfullscreen></iframe>
+            <!-- if iframe is running dont show post.text below-->
+            {% else %}
+            {% endif %}
+            <br />
+            <br />
+            {{post.text}}
+          </div>
+    
+          <br />
+          <div class="collapse" id="comments-{{post.id}}">
+            <div class="card">
+              <div class="card-body" id="comments-expanded-{{post.id}}">
+                {% for comment in post.comments %}
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <a href="/posts/{{comment.user.username}}"
+                      >{{comment.user.username}}</a
+                    >: {{comment.text}}
+                  </div>
+                  <div>
+                    <small class="text-muted"> {{comment.date_created}}</small>
+                    {% if user.id == comment.author or user.id == post.author %}
+                    <div class="btn-group">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-primary dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                      ></button>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a
+                            href="/delete-comment/{{comment.id}}"
+                            class="dropdown-item"
+                            >Delete</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <p class="card-text">
+                  <!--likecountstart-->
+            <span id="likes-count-{{post.id}}"> {{ post.likes|length }}</span>
+            {% if user.id in post.likes|map(attribute="author")|list %}
+            <i
+              class="fas fa-thumbs-up"
+              id="like-button-{{post.id}}"
+              onclick="like({{post.id}})"
+            ></i>
+            {% else %}
+            <i
+              class="far fa-thumbs-up"
+              id="like-button-{{post.id}}"
+              onclick="like({{post.id}})"
+            ></i>
+            {% endif %}
+          
+          <!--likecountend-->
+          
+            {% if post.comments|length > 0 %}
+            <a id="commentsarea" data-bs-toggle="collapse" href="#comments-{{post.id}}" role="button">
+              <small id="viewcomments">View {{post.comments|length}} Comment(s)</small>
+            </a>
+            {% else %}
+            <small id="commentsarea" class="text-muted">No Comments</small>
+            {% endif %}
+    
+          </div>
+          </p>
+    
+          <form
+            class="input-group mb-3"
+            method="POST"
+            action="/create-comment/{{post.id}}"
+          >
+            <input
+              type="text"
+              id="text"
+              name="text"
+              class="form-control"
+              placeholder="Comment on this post!"
+              style="text-align: center"
+            />
+            
+            <button id="commentbtn" type="submit" class="btn btn-primary">Comment</button>
+    
+            
+          </form>
+        </div>
+        <div align="right" id="datepostcreated" class="card-footer text-muted"><p id="date">{{post.date_created.strftime('%x')}}</p></div>
+      </div>
+      </div>
+      <br /> {% endif %}{% endfor %}
+
+    </div>
+    {% block footer %}
+<div align="center">
+    <a href="/home"><button id="backbtn" type="button" class="btn btn-lg btn-primary btn-lg">Back</button></a>
+</div>
+{% endblock %}
+{% endblock %}
+        
+    
